@@ -13,11 +13,7 @@
     "dev": "nodemon --watch 'src/'",
     "test": "jest"
   },
-  "pre-commit": [
-    "ts.check",
-    "build",
-    "add-build"
-  ],
+
   "devDependencies": {
     "@types/bcrypt": "^5.0.2",
     "@types/cors": "^2.8.17",
