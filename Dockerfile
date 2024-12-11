@@ -1,20 +1,17 @@
-# Usar uma imagem base do Node.js
-FROM node:18.17.0-alpine
+# Usando a imagem do Node.js
+FROM node:18
 
-# Definir o diretório de trabalho
+# Definindo o diretório de trabalho dentro do container
 WORKDIR /app
 
-# Copiar package.json e package-lock.json
-COPY package*.json ./
-
-# Instalar dependências
-RUN npm install
-
-# Copiar o restante do código da aplicação
+# Copiando os arquivos do backend para o container
 COPY . .
 
-# Expor a porta que a aplicação irá rodar
+# Instalando as dependências
+RUN npm install --legacy-peer-deps
+
+# Expondo a porta da API (ajuste conforme necessário)
 EXPOSE 4000
 
-# Comando para iniciar a aplicação
-CMD ["npm", "start"]
+# Comando para rodar a aplicação
+CMD ["npm", "run", "dev"]
