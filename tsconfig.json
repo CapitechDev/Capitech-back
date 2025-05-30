@@ -2,7 +2,8 @@
   "compilerOptions": {
     "target": "ESNext",
     "module": "CommonJS",
-    "outDir": "dist",
+    "outDir": "./dist",
+    "rootDir": "./src",
     "sourceMap": true,
     "strict": true,
     "strictPropertyInitialization": false,
