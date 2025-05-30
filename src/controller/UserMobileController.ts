@@ -9,8 +9,16 @@ const JWT_SECRET = process.env.JWT_SECRET;
 export class UserMobileController {
   getAllUserMobile = async (req: Request, res: Response) => {
     try {
-      const users = await prisma.userMobile.find();
-      res.json(users);
+      const users = await prisma.user.findMany();
+      res.status(200).json({
+        users: users.map((user) => ({
+          id: user.id,
+          name: user.name,
+          email: user.email,
+          createdAt: user.createdAt,
+          updatedAt: user.updatedAt,
+        })),
+      });
     } catch (error: unknown) {
       res.status(500).json({
         message: "Erro ao buscar usuários móveis",
@@ -23,8 +31,7 @@ export class UserMobileController {
       await UserSchema.create.validate(req.body);
 
       const { name, email, password } = req.body;
-
-      const exitingUser = await prisma.userMobile.findOne({
+      const exitingUser = await prisma.user.findUnique({
         where: { email },
       });
       if (exitingUser) {
@@ -33,15 +40,13 @@ export class UserMobileController {
 
       const hashedPassword = await bcrypt.hash(password, 10);
 
-      const newUser = await prisma.userMobile.create({
+      await prisma.user.create({
         data: {
           name,
           email,
           password: hashedPassword,
         },
       });
-
-      await newUser.save();
       res.status(201).json({ message: "Usuário criado com sucesso" });
     } catch (error: unknown) {
       if (error instanceof Error) {
@@ -51,18 +56,13 @@ export class UserMobileController {
       }
     }
   };
-
   loginUserMobile = async (req: Request, res: Response) => {
     try {
+      // Validação dos dados de entrada
       await UserSchema.loginMobile.validate(req.body);
 
-      const { email, password } = req.body;
-
-      // Validação dos dados de entrada
-      await UserSchema.loginMobile.validate({ email, password });
-
-      // Verifica se o usuário existe
-      const user = await prisma.userMobile.findOne({
+      const { email, password } = req.body; // Verifica se o usuário existe
+      const user = await prisma.user.findUnique({
         where: { email },
       });
 
