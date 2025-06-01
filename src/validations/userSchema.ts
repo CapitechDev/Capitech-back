@@ -39,4 +39,25 @@ export namespace UserSchema {
       .required("O email é obrigatório"),
     password: Yup.string().required("A senha é obrigatória"),
   });
+
+  export const forgotPassword: ObjectSchema<any> = object().shape({
+    email: Yup.string()
+      .email("O email deve ser um email válido")
+      .required("O email é obrigatório"),
+  });
+
+  export const resetPassword: ObjectSchema<any> = object().shape({
+    token: Yup.string().required("O token é obrigatório"),
+    password: Yup.string()
+      .required("A senha é obrigatória")
+      .min(6, "A senha deve ter pelo menos 6 caracteres")
+      .max(20, "A senha pode ter no máximo 20 caracteres"),
+  });
+
+  export const changePassword: ObjectSchema<any> = object().shape({
+    password: Yup.string()
+      .required("A senha é obrigatória")
+      .min(6, "A senha deve ter pelo menos 6 caracteres")
+      .max(20, "A senha pode ter no máximo 20 caracteres"),
+  });
 }
