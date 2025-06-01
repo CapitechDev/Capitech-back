@@ -3,6 +3,7 @@ import cors from "cors";
 import dotenv from "dotenv";
 import express, { NextFunction, Request, Response, urlencoded } from "express";
 import mongoose from "mongoose";
+import path from "path"; // Corrigido para import padrão
 import routes from "./routes";
 import { setupSwagger } from "./swagger";
 
@@ -36,6 +37,9 @@ async function startServer() {
     app.use(urlencoded({ extended: true }));
     app.use(cors());
 
+    // Servir arquivos estáticos da pasta public
+    app.use(express.static(path.join(__dirname, "../public")));
+
     // Middleware para disponibilizar o cliente Prisma em todas as rotas
     app.use((req: Request, _res: Response, next: NextFunction) => {
       req.prisma = prisma;
@@ -52,7 +56,7 @@ async function startServer() {
       app.use(route);
     });
 
-    app.listen(4000, () => {
+    app.listen(PORT, () => {
       console.log(`🚀 API rodando em http://localhost:${PORT}`);
     });
   } catch (error) {
