@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { UserMobileController } from "../controller/UserMobileController";
+import { ensureAuthenticate } from "../middlewares/AuthorizationMobile";
 import Validation from "../middlewares/Validations";
 
 const routesMobile = Router();
@@ -31,6 +32,7 @@ routesMobile.post(
 //troca a senha
 routesMobile.post(
   "/users-mobile/change-password",
+  ensureAuthenticate,
   userMobileController.changePassword
 );
 
