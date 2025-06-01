@@ -36,28 +36,59 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const express_1 = __importStar(require("express"));
+const client_1 = require("@prisma/client");
 const cors_1 = __importDefault(require("cors"));
-const mongoose_1 = __importDefault(require("mongoose"));
 const dotenv_1 = __importDefault(require("dotenv"));
+const express_1 = __importStar(require("express"));
+const mongoose_1 = __importDefault(require("mongoose"));
+const path_1 = __importDefault(require("path")); // Corrigido para import padrão
 const routes_1 = __importDefault(require("./routes"));
 const swagger_1 = require("./swagger");
 dotenv_1.default.config();
-mongoose_1.default
-    .connect(process.env.DB_PATH)
-    .then(() => {
-    const app = (0, express_1.default)();
-    app.use(express_1.default.json());
-    app.use((0, express_1.urlencoded)({ extended: true }));
-    app.use((0, cors_1.default)());
-    app.get("/", (_req, res) => {
-        res.status(200).json({ entry: "API Capitech rodando!" });
-    });
-    (0, swagger_1.setupSwagger)(app);
-    app.use(routes_1.default);
-    app.listen(4000, () => {
-        console.log("api rodando em http://localhost:4000");
-    });
-})
-    .catch(() => console.log("Erro ao conectar ao mongodb"));
+const PORT = process.env.PORT || 3000;
+// Inicializa o cliente Prisma para MySQL
+const prisma = new client_1.PrismaClient();
+async function startServer() {
+    try {
+        // Conecta ao MongoDB
+        await mongoose_1.default.connect(process.env.DB_PATH);
+        console.log("✅ MongoDB conectado com sucesso!");
+        // Conecta ao MySQL via Prisma
+        await prisma.$connect();
+        console.log("✅ MySQL conectado com sucesso via Prisma!");
+        const app = (0, express_1.default)();
+        app.use(express_1.default.json());
+        app.use((0, express_1.urlencoded)({ extended: true }));
+        app.use((0, cors_1.default)());
+        // Servir arquivos estáticos da pasta public
+        app.use(express_1.default.static(path_1.default.join(__dirname, "../public")));
+        // Middleware para disponibilizar o cliente Prisma em todas as rotas
+        app.use((req, _res, next) => {
+            req.prisma = prisma;
+            next();
+        });
+        app.get("/", (_req, res) => {
+            res.status(200).json({ entry: "API Capitech rodando!" });
+        });
+        (0, swagger_1.setupSwagger)(app);
+        routes_1.default.forEach((route) => {
+            app.use(route);
+        });
+        app.listen(PORT, () => {
+            console.log(`🚀 API rodando em http://localhost:${PORT}`);
+        });
+    }
+    catch (error) {
+        console.error("❌ Erro ao iniciar o servidor:", error);
+        process.exit(1);
+    }
+    finally {
+        // Adiciona um handler para fechar as conexões quando a aplicação for encerrada
+        process.on("beforeExit", async () => {
+            await prisma.$disconnect();
+            await mongoose_1.default.disconnect();
+        });
+    }
+}
+startServer();
 //# sourceMappingURL=index.js.map
