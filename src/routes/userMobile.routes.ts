@@ -18,4 +18,20 @@ routesMobile.post(
 // Rota para login de usuário móvel
 routesMobile.post("/users-mobile/login", userMobileController.loginUserMobile);
 
+//Envia o link da pagina para redefinir a senha
+routesMobile.post(
+  "/users-mobile/forgot-password",
+  userMobileController.forgotPasswordEmail
+);
+//redefine a senha antes do login
+routesMobile.post(
+  "/users-mobile/reset-password",
+  userMobileController.resetPassword
+);
+//troca a senha
+routesMobile.post(
+  "/users-mobile/change-password",
+  userMobileController.changePassword
+);
+
 export default routesMobile;
