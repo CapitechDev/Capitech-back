@@ -44,4 +44,7 @@ build/
 tmp/
 temp/
 
+
+generated/
+
 .DS_Store

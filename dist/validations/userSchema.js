@@ -40,32 +40,56 @@ var UserSchema;
 (function (UserSchema) {
     UserSchema.create = (0, yup_1.object)().shape({
         name: Yup.string()
-            .required('O nome é obrigatório')
-            .min(3, 'O nome deve ter pelo menos 3 caracteres')
-            .max(50, 'O nome pode ter no máximo 50 caracteres'),
+            .required("O nome é obrigatório")
+            .min(3, "O nome deve ter pelo menos 3 caracteres")
+            .max(50, "O nome pode ter no máximo 50 caracteres"),
         email: Yup.string()
-            .email('O email deve ser um email válido')
-            .required('O email é obrigatório'),
+            .email("O email deve ser um email válido")
+            .required("O email é obrigatório"),
         password: Yup.string()
-            .required('A senha é obrigatória')
-            .min(6, 'A senha deve ter pelo menos 6 caracteres')
-            .max(20, 'A senha pode ter no máximo 20 caracteres'),
+            .required("A senha é obrigatória")
+            .min(6, "A senha deve ter pelo menos 6 caracteres")
+            .max(20, "A senha pode ter no máximo 20 caracteres"),
     });
     UserSchema.update = (0, yup_1.object)().shape({
         name: Yup.string()
             .notRequired()
-            .min(3, 'O nome deve ter pelo menos 3 caracteres')
-            .max(50, 'O nome pode ter no máximo 50 caracteres')
+            .min(3, "O nome deve ter pelo menos 3 caracteres")
+            .max(50, "O nome pode ter no máximo 50 caracteres")
             .optional(),
         email: Yup.string()
-            .email('O email deve ser um email válido')
+            .email("O email deve ser um email válido")
             .notRequired()
             .optional(),
         password: Yup.string()
             .notRequired()
-            .min(6, 'A senha deve ter pelo menos 6 caracteres')
-            .max(20, 'A senha pode ter no máximo 20 caracteres')
+            .min(6, "A senha deve ter pelo menos 6 caracteres")
+            .max(20, "A senha pode ter no máximo 20 caracteres")
             .optional(),
+    });
+    UserSchema.loginMobile = (0, yup_1.object)().shape({
+        email: Yup.string()
+            .email("O email deve ser um email válido")
+            .required("O email é obrigatório"),
+        password: Yup.string().required("A senha é obrigatória"),
+    });
+    UserSchema.forgotPassword = (0, yup_1.object)().shape({
+        email: Yup.string()
+            .email("O email deve ser um email válido")
+            .required("O email é obrigatório"),
+    });
+    UserSchema.resetPassword = (0, yup_1.object)().shape({
+        token: Yup.string().required("O token é obrigatório"),
+        password: Yup.string()
+            .required("A senha é obrigatória")
+            .min(6, "A senha deve ter pelo menos 6 caracteres")
+            .max(20, "A senha pode ter no máximo 20 caracteres"),
+    });
+    UserSchema.changePassword = (0, yup_1.object)().shape({
+        password: Yup.string()
+            .required("A senha é obrigatória")
+            .min(6, "A senha deve ter pelo menos 6 caracteres")
+            .max(20, "A senha pode ter no máximo 20 caracteres"),
     });
 })(UserSchema || (exports.UserSchema = UserSchema = {}));
 //# sourceMappingURL=userSchema.js.map
