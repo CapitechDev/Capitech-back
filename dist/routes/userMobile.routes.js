@@ -5,6 +5,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const UserMobileController_1 = require("../controller/UserMobileController");
+const AuthorizationMobile_1 = require("../middlewares/AuthorizationMobile");
 const Validations_1 = __importDefault(require("../middlewares/Validations"));
 const routesMobile = (0, express_1.Router)();
 const userMobileController = new UserMobileController_1.UserMobileController();
@@ -20,6 +21,6 @@ routesMobile.post("/users-mobile/forgot-password", userMobileController.forgotPa
 //redefine a senha antes do login
 routesMobile.post("/users-mobile/reset-password", userMobileController.resetPassword);
 //troca a senha
-routesMobile.post("/users-mobile/change-password", userMobileController.changePassword);
+routesMobile.post("/users-mobile/change-password", AuthorizationMobile_1.ensureAuthenticate, userMobileController.changePassword);
 exports.default = routesMobile;
 //# sourceMappingURL=userMobile.routes.js.map

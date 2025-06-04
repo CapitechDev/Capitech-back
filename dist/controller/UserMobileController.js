@@ -12,6 +12,9 @@ const prisma = new client_1.PrismaClient();
 const JWT_SECRET = process.env.JWT_SECRET;
 const emailApp = process.env.GOOGLE_EMAIL;
 const appPassword = process.env.GOOGLE_APP_PASSWORD;
+const generateToken = () => {
+    return Math.random().toString(36).substring(2, 8).toUpperCase();
+};
 class UserMobileController {
     getAllUserMobile = async (req, res) => {
         try {
@@ -105,13 +108,12 @@ class UserMobileController {
             if (!user) {
                 return res.status(400).json({ message: "Email inválido" });
             }
-            const resetToken = crypto.randomUUID();
+            const resetToken = generateToken();
             const resetTokenExpiry = new Date(Date.now() + 3600000);
             await prisma.user.update({
                 where: { email },
                 data: { resetToken, resetTokenExpiry },
             });
-            const resetLink = `http://localhost:4000/reset-password-mobile.html?token=${resetToken}`;
             const nodemailer = require("nodemailer");
             const transporter = nodemailer.createTransport({
                 service: "gmail",
@@ -123,26 +125,32 @@ class UserMobileController {
             const mailOptions = {
                 from: emailApp,
                 to: user.email,
-                subject: "Recuperação de senha",
+                subject: "Recuperação de Senha - Capitech",
                 html: `
-        Olá, ${user.name},<br><br>
-        Você solicitou a recuperação de senha.<br>
-        Clique no link abaixo para redefinir sua senha:<br>
-        <a href="${resetLink}">${resetLink}</a><br><br>
-        Este link é válido por 1 hora.<br><br>
-        Atenciosamente,<br>
-        Equipe Capitech
-      `,
+        <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
+          <h2 style="color:#25059b;">Olá, ${user.name}.</h2>
+          <p>Você solicitou a recuperação de sua senha.</p>
+          <p>Use o seguinte token para redefinir sua senha:</p>
+          <div style="text-align: center; margin: 20px 0;">
+            <span style="font-size: 18px; font-weight: bold; color:#25059b;">${resetToken}</span>
+          </div>
+          <p><strong>Importante:</strong> Este token é válido por 1 hora.</p>
+          <p>Se você não solicitou a recuperação de senha, por favor, ignore este email.</p>
+          <br>
+          <p>Atenciosamente,</p>
+          <p><strong>Equipe Capitech</strong></p>
+        </div>
+        `,
             };
             await transporter.sendMail(mailOptions);
             return res.status(200).json({
-                message: "Email de recuperação enviado com sucesso",
+                message: "Token de recuperação enviado com sucesso",
             });
         }
         catch (error) {
             console.error("Erro no envio de email:", error);
             return res.status(500).json({
-                message: "Erro ao enviar email de recuperação",
+                message: "Erro ao enviar token de recuperação",
                 error: error.message || error,
             });
         }
