@@ -8,6 +8,10 @@ const JWT_SECRET = process.env.JWT_SECRET;
 const emailApp = process.env.GOOGLE_EMAIL;
 const appPassword = process.env.GOOGLE_APP_PASSWORD;
 
+const generateToken = () => {
+  return Math.random().toString(36).substring(2, 8).toUpperCase();
+};
+
 export class UserMobileController {
   getAllUserMobile = async (req: Request, res: Response) => {
     try {
@@ -113,7 +117,7 @@ export class UserMobileController {
         return res.status(400).json({ message: "Email inválido" });
       }
 
-      const resetToken = crypto.randomUUID();
+      const resetToken = generateToken();
       const resetTokenExpiry = new Date(Date.now() + 3600000);
 
       await prisma.user.update({
@@ -133,16 +137,22 @@ export class UserMobileController {
       const mailOptions = {
         from: emailApp,
         to: user.email,
-        subject: "Recuperação de senha",
+        subject: "Recuperação de Senha - Capitech",
         html: `
-        Olá, ${user.name},<br><br>
-        Você solicitou a recuperação de senha.<br>
-        Use o seguinte token para redefinir sua senha:<br>
-        <strong>${resetToken}</strong><br><br>
-        Este token é válido por 1 hora.<br><br>
-        Atenciosamente,<br>
-        Equipe Capitech
-      `,
+        <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
+          <h2 style="color:#25059b;">Olá, ${user.name}.</h2>
+          <p>Você solicitou a recuperação de sua senha.</p>
+          <p>Use o seguinte token para redefinir sua senha:</p>
+          <div style="text-align: center; margin: 20px 0;">
+            <span style="font-size: 18px; font-weight: bold; color:#25059b;">${resetToken}</span>
+          </div>
+          <p><strong>Importante:</strong> Este token é válido por 1 hora.</p>
+          <p>Se você não solicitou a recuperação de senha, por favor, ignore este email.</p>
+          <br>
+          <p>Atenciosamente,</p>
+          <p><strong>Equipe Capitech</strong></p>
+        </div>
+        `,
       };
 
       await transporter.sendMail(mailOptions);
