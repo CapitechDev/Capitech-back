@@ -121,8 +121,6 @@ export class UserMobileController {
         data: { resetToken, resetTokenExpiry },
       });
 
-      const resetLink = `http://localhost:4000/reset-password-mobile.html?token=${resetToken}`;
-
       const nodemailer = require("nodemailer");
       const transporter = nodemailer.createTransport({
         service: "gmail",
@@ -139,9 +137,9 @@ export class UserMobileController {
         html: `
         Olá, ${user.name},<br><br>
         Você solicitou a recuperação de senha.<br>
-        Clique no link abaixo para redefinir sua senha:<br>
-        <a href="${resetLink}">${resetLink}</a><br><br>
-        Este link é válido por 1 hora.<br><br>
+        Use o seguinte token para redefinir sua senha:<br>
+        <strong>${resetToken}</strong><br><br>
+        Este token é válido por 1 hora.<br><br>
         Atenciosamente,<br>
         Equipe Capitech
       `,
@@ -150,12 +148,12 @@ export class UserMobileController {
       await transporter.sendMail(mailOptions);
 
       return res.status(200).json({
-        message: "Email de recuperação enviado com sucesso",
+        message: "Token de recuperação enviado com sucesso",
       });
     } catch (error: any) {
       console.error("Erro no envio de email:", error);
       return res.status(500).json({
-        message: "Erro ao enviar email de recuperação",
+        message: "Erro ao enviar token de recuperação",
         error: error.message || error,
       });
     }
