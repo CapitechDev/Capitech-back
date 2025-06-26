@@ -73,7 +73,7 @@ const validation = new Validations_1.default();
  *                 message:
  *                   type: string
  */
-routes.post('/login', userController.auth);
+routes.post('/login', (req, res) => userController.auth(req, res));
 /**
  * @swagger
  * /cadastro:
@@ -144,7 +144,7 @@ routes.post('/login', userController.auth);
  *                 message:
  *                   type: string
  */
-routes.post('/cadastro', validation.validate(userSchema_1.UserSchema.create), userController.register);
+routes.post('/cadastro', validation.validate(userSchema_1.UserSchema.create), (req, res) => userController.register(req, res));
 /**
  * @swagger
  * /user/{id}:
@@ -190,7 +190,7 @@ routes.post('/cadastro', validation.validate(userSchema_1.UserSchema.create), us
  *                 message:
  *                   type: string
  */
-routes.delete('/user/:id', Authorization_1.ensureAuthenticate, userController.delete);
+routes.delete('/user/:id', Authorization_1.ensureAuthenticate, (req, res) => userController.delete(req, res));
 /**
  * @swagger
  * /user/{id}:
@@ -261,6 +261,6 @@ routes.delete('/user/:id', Authorization_1.ensureAuthenticate, userController.de
  *                 message:
  *                   type: string
  */
-routes.put('/user/:id', validation.validate(userSchema_1.UserSchema.update), Authorization_1.ensureAuthenticate, userController.update);
+routes.put('/user/:id', validation.validate(userSchema_1.UserSchema.update), Authorization_1.ensureAuthenticate, (req, res) => userController.update(req, res));
 exports.default = routes;
 //# sourceMappingURL=user.routes.js.map

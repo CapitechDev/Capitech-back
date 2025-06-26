@@ -1,4 +1,4 @@
-import { Router } from 'express';
+import { Router, Request, Response } from 'express';
 import { UserController } from '../controller/UserController';
 import { ensureAuthenticate } from '../middlewares/Authorization';
 import Validation from '../middlewares/Validations';
@@ -71,7 +71,7 @@ const validation = new Validation();
  *                   type: string
  */
 
-routes.post('/login', userController.auth);
+routes.post('/login', (req: Request, res: Response) => userController.auth(req, res));
 
 /**
  * @swagger
@@ -147,7 +147,7 @@ routes.post('/login', userController.auth);
 routes.post(
   '/cadastro',
   validation.validate(UserSchema.create),
-  userController.register
+  (req: Request, res: Response) => userController.register(req, res)
 );
 
 /**
@@ -196,7 +196,7 @@ routes.post(
  *                   type: string
  */
 
-routes.delete('/user/:id', ensureAuthenticate, userController.delete);
+routes.delete('/user/:id', ensureAuthenticate, (req: Request, res: Response) => userController.delete(req as any, res));
 
 /**
  * @swagger
@@ -273,7 +273,7 @@ routes.put(
   '/user/:id',
   validation.validate(UserSchema.update),
   ensureAuthenticate,
-  userController.update
+  (req: Request, res: Response) => userController.update(req as any, res)
 );
 
 export default routes;
