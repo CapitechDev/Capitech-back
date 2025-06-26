@@ -42,6 +42,6 @@ const authController = new AuthController();
  *                   type: string
  */
 
-routes.post("/validateToken", authController.validateToken);
+routes.post("/validateToken", (req, res) => authController.validateToken(req, res));
 
 export default routes;

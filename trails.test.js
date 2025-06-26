@@ -8,7 +8,7 @@ const request = require('supertest');
 // const dotenv = require("dotenv");
 // dotenv.config(); //carrega as variáveis do .env
 
-const baseURL = 'https://capitech-back.vercel.app';
+const baseURL = process.env.TEST_BASE_URL || 'http://localhost:3000';
 
 describe('API REST de trilhas sem o Token', () => {
   it('GET / - Lista todas as trilhas sem o token', async () => {

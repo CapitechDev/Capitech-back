@@ -44,7 +44,7 @@ const trailController = new TrailController_1.TrailController();
  *                 message:
  *                   type: string
  */
-routes.get('/trilhas', trailController.getAll);
+routes.get('/trilhas', (req, res) => trailController.getAll(req, res));
 /**
  * @swagger
  * /trilhas/{id}:
@@ -85,7 +85,7 @@ routes.get('/trilhas', trailController.getAll);
  *                 message:
  *                   type: string
  */
-routes.get('/trilhas/:id', trailController.getOne);
+routes.get('/trilhas/:id', (req, res) => trailController.getOne(req, res));
 /**
  * @swagger
  * /trilhas:
@@ -114,7 +114,7 @@ routes.get('/trilhas/:id', trailController.getOne);
  *       500:
  *         description: Internal server error
  */
-routes.post('/trilhas', Authorization_1.ensureAuthenticate, trailController.create);
+routes.post('/trilhas', Authorization_1.ensureAuthenticate, (req, res) => trailController.create(req, res));
 /**
  * @swagger
  * /trilhas/{id}:
@@ -152,7 +152,7 @@ routes.post('/trilhas', Authorization_1.ensureAuthenticate, trailController.crea
  *       500:
  *         description: Internal server error
  */
-routes.put('/trilhas/:id', Authorization_1.ensureAuthenticate, trailController.update);
+routes.put('/trilhas/:id', Authorization_1.ensureAuthenticate, (req, res) => trailController.update(req, res));
 /**
  * @swagger
  * /trilhas/{id}:
@@ -177,6 +177,6 @@ routes.put('/trilhas/:id', Authorization_1.ensureAuthenticate, trailController.u
  *       500:
  *         description: Internal server error
  */
-routes.delete('/trilhas/:id', Authorization_1.ensureAuthenticate, trailController.delete);
+routes.delete('/trilhas/:id', Authorization_1.ensureAuthenticate, (req, res) => trailController.delete(req, res));
 exports.default = routes;
 //# sourceMappingURL=trail.routes.js.map
